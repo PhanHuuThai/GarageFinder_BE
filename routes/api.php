@@ -8,6 +8,8 @@ use App\Http\Controllers\client\AboutController;
 use App\Http\Controllers\client\FavouriteGarageController;
 use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProfileController;
+use App\Http\Controllers\garage\GarageController;
+use App\Http\Controllers\client\OrderClientController;
 use App\Http\Controllers\garage\OrderController;
 use App\Http\Controllers\garage\StaffController;
 use Illuminate\Http\Request;
@@ -87,6 +89,11 @@ Route::group([
     ], function () {
         Route::get('/get-all-garage', [HomeController::class, 'getAllGarage']);
     });
+    Route::group([
+        'prefix' => 'order'
+    ], function () {
+        Route::post('/', [OrderClientController::class, 'createBooking']);
+    });
 });
 
 Route::group([
@@ -110,6 +117,8 @@ Route::group([
     });
     Route::get('/get-garage-register', [GarageRegisterController::class, 'getAllGarageRegister']);
     Route::put('/update-status/{id}', [GarageRegisterController::class, 'updateGarageStatus']);
+    Route::post('/create', [GarageController::class, 'register']);
+    Route::put('/update/{id}', [GarageController::class, 'edit']);
 });
 
 
