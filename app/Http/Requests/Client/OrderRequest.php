@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Garage;
+namespace App\Http\Requests\Client;
 
 use App\Http\Requests\BaseRequest;
 
-class GarageRequest extends BaseRequest
+class OrderRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -51,36 +51,24 @@ class GarageRequest extends BaseRequest
     protected function postRules()
     {
         return [
-            'image_thumnail' => 'required|mimes:jpeg,png,jpg,webp',
-            'image_detail.*' => 'required|mimes:jpeg,png,jpg,webp',
-            'image_detail' => 'required',
             'name' => 'required',
             'email' => 'required|email|max:255',
-            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:11',
-            'nest' => 'required',
-            'province' => 'required',
-            'district' => 'required',
-            'ward' => 'required',
-            'time_open' => 'required|date_format:H:i',
-            'time_close' => 'required|date_format:H:i|after:time_open',
-            'brand' => 'required',
-            'service' => 'required'
+            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:10',
+            'car' => 'required',
+            'service' => 'required',
+            'time' => "required|date_format:H:i",
+            'date' => "required|date|after_or_equal:today",
         ];
     }
 
     protected function putRules()
     {
         return [
-            'image_thumnail' => 'required|mimes:jpeg,png,jpg,webp',
-            'name' => 'required',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:11',
-            'nest' => 'required',
-            'province' => 'required',
-            'district' => 'required',
-            'ward' => 'required',
-            'time_open' => 'required|date_format:H:i',
-            'time_close' => 'required|date_format:H:i|after:time_open',
+            'name' => 'required|min:5|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:1024',
+            'type' => 'required|min:3|max:10',
+            'id_brand' => 'required',
+            'license' => 'required|min:8|max:20'
         ];
     }
 
