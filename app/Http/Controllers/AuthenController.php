@@ -25,8 +25,7 @@ class AuthenController extends Controller
         // return $user;    
         if($user["success"]) {
             return response()->json([
-                'status' => true,
-                'message' => 'Loggin success',
+                'data' => $user,
                 'token' => $user['data']->createToken("API TOKEN")->plainTextToken
             ], 200);
         } else {
