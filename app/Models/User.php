@@ -27,7 +27,8 @@ class User extends Authenticatable
         'id_provider',
         'provider_token',
         'phone',
-        'id_role'
+        'id_role',
+        'google_id'
     ];
     /**
      * The attributes that should be hidden for serialization.

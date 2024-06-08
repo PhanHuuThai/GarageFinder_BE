@@ -11,6 +11,7 @@
         "intervention/image": "^3.6",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
+        "laravel/socialite": "^5.14",
         "laravel/tinker": "^2.8"
     },
     "require-dev": {

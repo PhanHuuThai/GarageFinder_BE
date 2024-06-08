@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+
+Route::middleware(['web'])->group(function () {
+    Route::get('auth/google', [AuthenController::class, 'redirectToGoogle']);
+    Route::get('auth/google/callback', [AuthenController::class, 'handleGoogleCallback']);
 });
