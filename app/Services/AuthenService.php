@@ -21,7 +21,8 @@ class AuthenService extends BaseService
         try {
 
             $user = $this->userRepository->getUserByEmail($request->email);
-            
+
+
 
             if($user && Hash::check($request->password, $user->password)) {
                 return  $this->successResult($user, "Sucessfully login");
@@ -33,12 +34,12 @@ class AuthenService extends BaseService
         }
     }
 
-    public function repass($request) 
+    public function repass($request)
     {
         try {
             $user = $this->userRepository->find(auth()->user()->id);
             $user->password = Hash::make($request->password);
-            
+
             $user = $this->userRepository->updateUser($user);
             return $this->successResult($user, "Sucessfully reset password");
         } catch (\Exception $e) {

@@ -129,6 +129,4 @@ Route::group([
     Route::post('/register', [UserController::class, 'register']);
     Route::get('/logout', [AuthenController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/repass', [AuthenController::class, 'repass'])->middleware('auth:sanctum');
-    Route::get('/google', [AuthenController::class, 'redirectToGoogle']);
-    Route::get('/google/callback', [AuthenController::class, 'handleGoogleCallback']);
 });

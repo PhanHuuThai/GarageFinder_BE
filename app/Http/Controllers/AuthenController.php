@@ -6,6 +6,7 @@ use App\Http\Requests\AuthenRequest;
 use App\Repositories\UserRepository;
 use App\Services\AuthenService;
 use App\Services\UserService;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,9 +81,9 @@ class AuthenController extends Controller
     /**
      * Obtain the user information from Google.
      *
-     * @return JsonResponse
+     * @return Application|\Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function handleGoogleCallback(): JsonResponse
+    public function handleGoogleCallback(): Application|\Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
     {
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
@@ -100,7 +101,7 @@ class AuthenController extends Controller
                     'id_provider' => 1,
                     'email' => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
-                    'password' => bcrypt(Str::random(16)),
+                    'password' => bcrypt(Str::random(8)),
                     'id_role' => 1,
                     'id_ward' => 1,
                 ]);
@@ -109,23 +110,19 @@ class AuthenController extends Controller
             $loginRequest = new AuthenRequest();
             $loginRequest->merge([
                 'email' => $user->email,
-                'password' => $user->password, // This won't be used for Google login
             ]);
-            $this->login($loginRequest);
 
-            return response()->json([
-                'data' => $user,
-                'token' => $user->createToken("API TOKEN")->plainTextToken
-            ], 200);
 
+            $token = $user->createToken("API TOKEN")->plainTextToken;
+
+            $redirectUrl = config('app.frontend_url') . '/google-login-callback?token='.$token.'&user='.json_encode($user);;
+            return redirect($redirectUrl);
         } catch (\Exception $e) {
             // Log the error for debugging
             Log::error('Google login error: ' . $e->getMessage(), ['exception' => $e]);
-            return response()->json([
-                'status' => false,
-                'message' => 'Unable to login with Google.',
-                'data' =>  $e->getMessage()
-            ], 500);
+
+            // Redirect to the frontend with an error message
+            return redirect(config('app.frontend_url') . '/google-login-callback?error=' . $e->getMessage());
         }
     }
 

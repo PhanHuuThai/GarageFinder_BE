@@ -23,3 +23,5 @@ Route::middleware(['web'])->group(function () {
     Route::get('auth/google', [AuthenController::class, 'redirectToGoogle']);
     Route::get('auth/google/callback', [AuthenController::class, 'handleGoogleCallback']);
 });
+
+
