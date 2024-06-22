@@ -37,10 +37,13 @@ class AuthenService extends BaseService
     {
         try {
             $user = $this->userRepository->find(auth()->user()->id);
-            $user->password = Hash::make($request->password);
-            
-            $user = $this->userRepository->updateUser($user);
-            return $this->successResult($user, "Sucessfully reset password");
+            if($user && Hash::check($request->oldPassword, $user->password)) {
+                $user->password = Hash::make($request->newPassword);
+                $user = $this->userRepository->updateUser($user);
+                return $this->successResult($user, "Sucessfully reset password");
+            }
+            \Log::info($request);
+            return $this->errorResult($user, "wrong old password");
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
             return $this->errorResult($e->getMessage(), [], 200);

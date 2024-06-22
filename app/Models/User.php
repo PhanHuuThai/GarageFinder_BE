@@ -27,7 +27,9 @@ class User extends Authenticatable
         'id_provider',
         'provider_token',
         'phone',
-        'id_role'
+        'id_role',
+        'id_district',
+        'id_province'
     ];
     /**
      * The attributes that should be hidden for serialization.

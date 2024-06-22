@@ -16,5 +16,11 @@ class BrandGarageRepository extends BaseRepository
     {
         return $this->model->insert($attribute);
     }
-    
+
+    public function getByIdGarageAndIdBrand($request)
+    {
+        return $this->model->where('id_garage', $request->id_garage)
+                        ->where('id_brand', $request->id_brand)
+                        ->first();
+    }
 }

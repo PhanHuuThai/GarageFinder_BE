@@ -17,6 +17,6 @@ class Service extends Model
 
     public function service_garage(): HasMany
     {
-        return $this->hasMany(ServiceGarage::class, 'id_brand', 'id');
+        return $this->hasMany(ServiceGarage::class, 'id_service', 'id');
     }
 }

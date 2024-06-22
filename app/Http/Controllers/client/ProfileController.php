@@ -49,4 +49,16 @@ class ProfileController extends Controller
         $order = $this->profileService->getOrder($status);
         return $this->sendResponse($order);
     }
+
+    public function getCarByUserId()
+    {
+        $cars = $this->profileService->getCarByUserId();
+        return $this->sendResponse($cars);
+    }
+
+    public function getCarById($id)
+    {
+        $car = $this->profileService->getCarById($id);
+        return $this->sendResponse($car);
+    }
 }

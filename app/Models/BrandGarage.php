@@ -18,4 +18,9 @@ class BrandGarage extends Model
     {
         return $this->belongsTo(BrandCar::class, 'id_brand', 'id');
     }
+
+    public function garage(): BelongsTo
+    {
+        return $this->belongsTo(Garage::class, 'id_garage', 'id');
+    }
 }

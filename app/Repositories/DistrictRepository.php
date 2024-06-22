@@ -11,5 +11,10 @@ class DistrictRepository extends BaseRepository
     {
         return District::class;
     }
+
+    public function getDistrictByIdProvince($id)
+    {
+        return $this->model->where('province_id', $id)->get();
+    }
     
 }

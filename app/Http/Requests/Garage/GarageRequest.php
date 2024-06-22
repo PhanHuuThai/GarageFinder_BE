@@ -71,7 +71,7 @@ class GarageRequest extends BaseRequest
     protected function putRules()
     {
         return [
-            'image_thumnail' => 'required|mimes:jpeg,png,jpg,webp',
+            'image_thumnail' => 'mimes:jpeg,png,jpg,webp',
             'name' => 'required',
             'email' => 'required|email|max:255',
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:11',

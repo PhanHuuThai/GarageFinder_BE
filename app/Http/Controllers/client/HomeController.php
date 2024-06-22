@@ -18,9 +18,15 @@ class HomeController extends Controller
         $this->garageService = $garageService;
     }
 
+    public function getHomeGarage() 
+    {
+        $garages = $this->garageService->getHomeGarage();
+        return $this->sendResponse($garages);
+    }
+
     public function getAllGarage() 
     {
-        $garages = $this->garageService->getAll();
+        $garages = $this->garageService->getAllGarage();
         return $this->sendResponse($garages);
     }
 }

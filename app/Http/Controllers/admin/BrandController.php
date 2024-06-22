@@ -24,6 +24,12 @@ class BrandController extends Controller
         return $this->sendResponse($brands);
     }
 
+    public function getBrandByIdGarage($id)
+    {
+        $brands = $this->brandService->getBrandByIdGarage($id);
+        return $this->sendResponse($brands);
+    }
+
     public function createBrand(BrandRequest $brandRequest) {
         $brand = $this->brandService->createBrand($brandRequest);
         return $this->sendResponse($brand);

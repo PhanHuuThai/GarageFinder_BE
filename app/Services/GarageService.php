@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\BrandCar;
 use App\Models\BrandGarage;
 use App\Models\Garage;
+use App\Models\Province;
 use App\Models\Service;
 use App\Models\ServiceGarage;
 use App\Repositories\BrandGarageRepository;
@@ -13,6 +15,7 @@ use App\Repositories\ProvinceRepository;
 use App\Repositories\ServiceGarageRepository;
 use App\Repositories\WardRepository;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Pagination\Paginator;
 
 class GarageService extends BaseService
 {
@@ -40,7 +43,26 @@ class GarageService extends BaseService
         $this->brandGarageRepository = $brandGarageRepository;
     }
 
-    public function getAll()
+    public function getHomeGarage()
+    {
+        $garage = $this->garageRepository->getHomeGarage();
+        return $this->successResult($garage, "get all garage success");
+    }
+
+    public function getGarageByUserId()
+    {
+        $garage = $this->garageRepository->getGarageByUserId(auth()->user()->id);
+        $garage->img_detail = json_decode($garage->img_detail);
+        return $this->successResult($garage, "get all garage success");
+    }
+
+    public function getGarageById($id) 
+    {
+        $garage = $this->garageRepository->find($id);
+        return $this->successResult($garage, "get detail garage success");
+    }
+
+    public function getAllGarage()
     {
         $garage = $this->garageRepository->getAll();
         return $this->successResult($garage, "get all garage success");
@@ -54,6 +76,60 @@ class GarageService extends BaseService
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
             return $this->errorResult($e->getMessage(), [], 200);
+        }
+    }
+
+    public function addGarageService($request)
+    {
+        try {
+            $garageService = [
+                "id_garage" => $request->id_garage,
+                "id_service" => $request->id_service
+            ];
+            $garage = $this->serviceGarageRepository->create($garageService);
+            return $this->successResult($garage, "add success");
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return $this->errorResult($e->getMessage(), [], 200);
+        }
+    }
+
+    public function addGarageBrand($request)
+    {
+        try {
+            $garageBrand = [
+                "id_garage" => $request->id_garage,
+                "id_brand" => $request->id_brand
+            ];
+            $garage = $this->brandGarageRepository->create($garageBrand);
+            return $this->successResult($garage, "add success");
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return $this->errorResult($e->getMessage(), [], 200);
+        }
+    }
+
+    public function deleteGarageService($request)
+    { 
+        try {
+            $garage = $this->serviceGarageRepository->getByIdGarageAndIdService($request);
+            $result = $this->serviceGarageRepository->delete($garage->id);
+            return $this->successResult($result, "delete success");       
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return $this->errorResult($e->getMessage(), [], 200);
+        }
+    }
+
+    public function deleteGarageBrand($id)
+    { 
+        try {
+            $garage = $this->brandGarageRepository->getByIdGarageAndIdBrand($id);
+            $result = $this->brandGarageRepository->delete($garage->id);
+            return $this->successResult($result, "delete success");       
+        } catch (\Exception $e) {
+                \Log::info($e->getMessage());
+                return $this->errorResult($e->getMessage(), [], 200);
         }
     }
 
@@ -138,25 +214,55 @@ class GarageService extends BaseService
 
     public function editGarage($garageRequest, $id) {
         try {
+            $img_detail = [];
+            $oldGarage = $this->garageRepository->find($id);
             if (!empty($garageRequest->image_thumnail)) {
-                $name_image_thum = Cloudinary::upload($garageRequest->image_thumnail->getRealPath())->getSecurePath();
+                $oldGarage->img_thumnail = Cloudinary::upload($garageRequest->image_thumnail->getRealPath())->getSecurePath();
             }
-            $wards = $this->wardRepository->find($garageRequest->ward)->first();
-            $districts = $this->districtRepository->find($garageRequest->district)->first();
-            $provinces = $this->provinceRepository->find($garageRequest->province)->first();
-            $address_detail = $garageRequest->nest . ', ' . $wards->name . ', ' . $districts->name . ', ' . $provinces->name;
-            
+            if(isset($garageRequest->name)) {
+                $oldGarage->name = $garageRequest->name;
+            }
+            if(isset($garageRequest->email)) {
+                $oldGarage->email = $garageRequest->email;
+            }
+            if(isset($garageRequest->phone)) {
+                $oldGarage->phone = $garageRequest->phone;
+            }
+            if(isset($garageRequest->time_open)) {
+                $oldGarage->time_openname = $garageRequest->time_open;
+            }
+            if(isset($garageRequest->time_close)) {
+                $oldGarage->time_close = $garageRequest->time_close;
+            }
+            if(isset($garageRequest->ward) && isset($garageRequest->id_province) && isset($garageRequest->id_province) && isset($garageRequest->nest)) {
+                $oldGarage->id_ward = $garageRequest->ward;
+                $oldGarage->id_district = $garageRequest->id_district;
+                $oldGarage->id_province = $garageRequest->id_province;
+                $wards = $this->wardRepository->find($garageRequest->ward)->first();
+                $districts = $this->districtRepository->find($garageRequest->district)->first();
+                $provinces = $this->provinceRepository->find($garageRequest->province)->first();
+                $oldGarage->address_datail = $garageRequest->nest . ', ' . $wards->name . ', ' . $districts->name . ', ' . $provinces->name;
+            }
+            if ($garageRequest->image_detail) {
+                foreach ($garageRequest->image_detail as $item) {
+                    $image = Cloudinary::upload($item->getRealPath())->getSecurePath();
+                    $img_detail[] = $image;
+                }
+            } else {
+                $img_detail[] = json_decode($oldGarage->img_detail);
+            }
             $garage = [
-                "name" => $garageRequest->name,
-                "address_detail" => $address_detail,
-                "id_ward" => $garageRequest->ward,
-                "id_district" => $garageRequest->district,
-                "id_province" => $garageRequest->province,
-                "email" => $garageRequest->email,
-                "phone" => $garageRequest->phone,
-                "time_open" => $garageRequest->time_open,
-                "time_close" => $garageRequest->time_close,
-                "img_thumnail" => $name_image_thum,
+                "name" => $oldGarage->name,
+                "address_detail" => $oldGarage->address_detail,
+                "id_ward" => $oldGarage->id_ward,
+                "id_district" => $oldGarage->id_district,
+                "id_province" => $oldGarage->id_province,
+                "email" => $oldGarage->email,
+                "phone" => $oldGarage->phone,
+                "time_open" => $oldGarage->time_open,
+                "time_close" => $oldGarage->time_close,
+                "img_thumnail" => $oldGarage->img_thumnail,
+                "img_detail" => json_encode($img_detail),
             ];
             $garage = $this->garageRepository->update($id, $garage);
             if($garage) {
@@ -167,5 +273,11 @@ class GarageService extends BaseService
             \Log::info($e->getMessage());
              return $this->errorResult($e->getMessage(), [], 200);
         }
+    }
+
+    public function searchGarage($request)
+    {
+        $garages = $this->garageRepository->searchGarage($request);
+        return $this->successResult($garages, "get Garage Success");
     }
 }

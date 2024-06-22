@@ -52,7 +52,7 @@ class CarRequest extends BaseRequest
     {
         return [
             'name' => 'required|min:5|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:1024',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp',
             'type' => 'required|min:3|max:10',
             'id_brand' => 'required',
             'license' => 'required|min:8|max:20'
@@ -62,11 +62,11 @@ class CarRequest extends BaseRequest
     protected function putRules()
     {
         return [
-            'name' => 'required|min:5|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:1024',
-            'type' => 'required|min:3|max:10',
-            'id_brand' => 'required',
-            'license' => 'required|min:8|max:20'
+            'name' => 'min:5|max:255',
+            'image' => 'image|mimes:jpeg,png,jpg,webp',
+            'type' => 'min:3|max:10',
+            // 'id_brand' => 'required',
+            'license' => 'min:8|max:20'
         ];
     }
 

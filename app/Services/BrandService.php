@@ -31,6 +31,12 @@ class BrandService extends BaseService
         }
     }
 
+    public function getBrandByIdGarage($id)
+    {
+        $brands = $this->brandRepository->getBrandByIdGarage($id);
+        return $this->successResult($brands, "get brands success");
+    }
+
     public function createBrand($brandRequest) 
     {
         try {
@@ -54,11 +60,27 @@ class BrandService extends BaseService
     public function updateBrand($brandRequest, $id) 
     {
         try {
-            $image = Cloudinary::upload($brandRequest->file('image')->getRealPath())->getSecurePath();
+            $oldBrand = $this->brandRepository->find($id);
+            if(isset($brandRequest->image)){
+                $image = Cloudinary::upload($brandRequest->file('image')->getRealPath())->getSecurePath();
+            } else {
+                $image = $oldBrand->image;
+            }
+            if(isset($brandRequest->name)){
+                $name = $brandRequest->name;
+            } else {
+                $name = $oldBrand->name;
+            }
+            if(isset($brandRequest->description)){
+                $description = $brandRequest->description;
+            } else {
+                $description = $oldBrand->description;
+            }
+            
             $brand = [
-                "name" => $brandRequest->name,
+                "name" => $name,
                 "image" => $image,
-                "description" => $brandRequest->description
+                "description" => $description
             ];
             $brand = $this->brandRepository->update($id, $brand);
             if($brand) {

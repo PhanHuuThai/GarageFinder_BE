@@ -21,10 +21,21 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-
-    public function showOrder(Request $request) 
+    public function updateStatus(Request $request, $id)
     {
-        $order = $this->orderService->getOrderByIdGarage($request);
+        $order = $this->orderService->updateStatusOrder($request, $id);
+        return $this->sendResponse($order);
+    }
+
+    public function getCompleteOrder($id)
+    {
+        $order = $this->orderService->getCompleteOrder($id);
+        return $this->sendResponse($order);
+    }
+
+    public function showOrder($id) 
+    {
+        $order = $this->orderService->getOrderByIdGarage($id);
         return $this->sendResponse($order);
     }
 }

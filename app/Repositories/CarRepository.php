@@ -12,5 +12,8 @@ class CarRepository extends BaseRepository
         return Car::class;
     }
 
-    
+    public function getCarByUserId($id)
+    {
+        return $this->model->where('id_user', $id)->get();
+    }
 }

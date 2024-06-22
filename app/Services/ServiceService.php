@@ -19,6 +19,11 @@ class ServiceService extends BaseService
         return $this->successResult($services, 'get all service success');
     }
 
+    public function getServiceByIdGarage($id) {
+        $services = $this->serviceRepository->getServiceByIdGarage($id);
+        return $this->successResult($services, "get service success");
+    }
+
     public function registerService($request)
     {
         try {

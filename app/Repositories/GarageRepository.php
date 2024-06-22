@@ -12,7 +12,7 @@ class GarageRepository extends BaseRepository
         return Garage::class;
     }
 
-    public function getAll()
+    public function getHomeGarage()
     {
         return $this->model->orderByRaw('RAND()')->take(9)->get();
     }
@@ -26,6 +26,11 @@ class GarageRepository extends BaseRepository
         return $this->model->whereIn('id', $ids)->get();
     }
 
+    public function getGarageByUserId($id)
+    {
+        return $this->model->where('id_user', $id)->first();
+    }
+
     public function updateStatusGarage($request, $id) {
         try{
             $garage = $this->model->find($id);
@@ -36,6 +41,19 @@ class GarageRepository extends BaseRepository
             \Log::debug($e->getMessage());
             abort(500, $e->getMessage());
         }
+    }
+
+    public function searchGarage($request)
+    {
+        return $this->model->whereHas('serviceGarages', function ($query) use ($request) {
+                                $query->where('id_service', $request->service);
+                            })
+                            ->whereHas('brandGarages', function ($query) use ($request) {
+                                $query->where('id_brand', $request->brand);
+                            })
+                            ->where('id_province', $request->province)
+                            ->where('name', 'LIKE', '%' . $request->name . '%')
+                            ->get();
     }
 
 }

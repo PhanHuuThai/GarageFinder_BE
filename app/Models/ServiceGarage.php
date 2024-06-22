@@ -18,4 +18,9 @@ class ServiceGarage extends Model
     {
         return $this->belongsTo(Service::class, 'id_service', 'id');
     }
+
+    public function garage(): BelongsTo
+    {
+        return $this->belongsTo(Garage::class, 'id_garage', 'id');
+    }
 }

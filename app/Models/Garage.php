@@ -14,8 +14,13 @@ class Garage extends Model
     protected $guarded = [];
     public $timestamps = true;
 
-    public function service(): HasMany
+    public function serviceGarages(): HasMany
     {
-        return $this->hasMany(ServiceGarage::class, 'id', 'id_garage');
+        return $this->hasMany(ServiceGarage::class, 'id_garage', 'id');
+    }
+
+    public function brandGarages(): HasMany
+    {
+        return $this->hasMany(BrandGarage::class, 'id_garage', 'id');
     }
 }

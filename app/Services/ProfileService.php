@@ -38,6 +38,18 @@ class ProfileService extends BaseService
         $this->orderRepository = $orderRepository;
     }
 
+    public function getCarByUserId()
+    {
+        $cars = $this->carRepository->getCarByUserId(auth()->user()->id);
+        return $this->successResult($cars, 'get cars success');
+    }
+
+    public function getCarById($id)
+    {
+        $car = $this->carRepository->find($id);
+        return $this->successResult($car, 'get car success');
+    }
+
     public function update($request)
     {
         try {
@@ -55,7 +67,6 @@ class ProfileService extends BaseService
             }
             if (!empty($request->ward)) {
                 $wards = $this->wardRepository->find($request->ward)->first();
-                
                 $address = $address . $wards->name . ', ';
             }
             if (!empty($request->district)) {
@@ -71,12 +82,15 @@ class ProfileService extends BaseService
                 $data['ward'] = $user->id_ward;
             }
 
+
             $user->name = $data['name'];
             $user->image = $data['image'];
             $user->phone = $data['phone'];
+            $user->email = $data['email'];
             $user->address = $address;
             $user->id_ward = $data['ward'] ?? $user->id_ward;
-            
+            $user->id_district = $data['district'] ?? $user->district;
+            $user->id_province = $data['province'] ?? $user->province;
             $user = $this->userRepository->updateUser($user);
             return $this->successResult($user, "Sucessfully fetched users");
         } catch (\Exception $e) {
@@ -111,7 +125,12 @@ class ProfileService extends BaseService
     public function updateCar($carRequest, $id) 
     {
         try {
-            $image = Cloudinary::upload($carRequest->file('image')->getRealPath())->getSecurePath();
+            \Log::info($carRequest);
+            if (!empty($carRequest->image)) {
+                $image = Cloudinary::upload($carRequest->file('image')->getRealPath())->getSecurePath();
+            } else {
+                $image = $this->carRepository->find($id)->image;
+            }
             $car = [
                 "id_brand" => $carRequest->id_brand,
                 "name" => $carRequest->name,

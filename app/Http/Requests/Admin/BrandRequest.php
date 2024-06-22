@@ -60,8 +60,8 @@ class BrandRequest extends BaseRequest
     protected function putRules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:1024',
+            'name' => 'string|max:255',
+            'image' => 'image|mimes:jpeg,png,jpg,webp',
             'description' => 'max:255',
         ];
     }

@@ -18,6 +18,12 @@ class ServiceController extends Controller
         $this->serviceService = $serviceService;
     }
 
+    public function getServiceGarage($id)
+    {
+        $services = $this->serviceService->getServiceByIdGarage($id);
+        return $this->sendResponse($services);
+    }
+
     public function registerService(ServiceRequest $request)
     {
         $staff = $this->serviceService->registerService($request);

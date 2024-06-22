@@ -11,5 +11,9 @@ class WardRepository extends BaseRepository
     {
         return Ward::class;
     }
-    
+ 
+    public function getWardByIdDistrict($id)
+    {
+        return $this->model->where('district_id', $id)->get();
+    }
 }
