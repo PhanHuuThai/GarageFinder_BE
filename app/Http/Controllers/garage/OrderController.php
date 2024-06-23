@@ -38,4 +38,16 @@ class OrderController extends Controller
         $order = $this->orderService->getOrderByIdGarage($id);
         return $this->sendResponse($order);
     }
+
+    public function getOrderByUserId()
+    {
+        $order = $this->orderService->getOrderByIdUser();
+        return $this->sendResponse($order);
+    }
+
+    public function getCompleteOrderByUserId()
+    {
+        $order = $this->orderService->getCompleteOrderByUserId();
+        return $this->sendResponse($order);
+    }
 }

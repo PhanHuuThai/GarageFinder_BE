@@ -52,8 +52,8 @@ class GarageRequest extends BaseRequest
     {
         return [
             'image_thumnail' => 'required|mimes:jpeg,png,jpg,webp',
-            'image_detail.*' => 'required|mimes:jpeg,png,jpg,webp',
-            'image_detail' => 'required',
+            // 'image_detail.*' => 'required|mimes:jpeg,png,jpg,webp',
+            // 'image_detail' => 'required',
             'name' => 'required',
             'email' => 'required|email|max:255',
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:11',
@@ -72,15 +72,15 @@ class GarageRequest extends BaseRequest
     {
         return [
             'image_thumnail' => 'mimes:jpeg,png,jpg,webp',
-            'name' => 'required',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:11',
-            'nest' => 'required',
-            'province' => 'required',
-            'district' => 'required',
-            'ward' => 'required',
-            'time_open' => 'required|date_format:H:i',
-            'time_close' => 'required|date_format:H:i|after:time_open',
+            // 'name' => 'required',
+            // 'email' => 'required|email|max:255',
+            // 'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:11',
+            // 'nest' => 'required',
+            // 'province' => 'required',
+            // 'district' => 'required',
+            // 'ward' => 'required',
+            // 'time_open' => 'required|date_format:H:i',
+            // 'time_close' => 'required|date_format:H:i|after:time_open',
         ];
     }
 

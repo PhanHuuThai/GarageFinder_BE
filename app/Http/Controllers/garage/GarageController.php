@@ -4,15 +4,8 @@ namespace App\Http\Controllers\garage;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Garage\GarageRequest;
-use App\Models\BrandCar;
-use App\Models\BrandGarage;
-use App\Models\Car;
-use App\Models\Garage;
-use App\Models\ServiceGarage;
 use App\Services\GarageService;
 use Illuminate\Http\Request;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 class GarageController extends Controller
 {
@@ -41,31 +34,8 @@ class GarageController extends Controller
 
     public function recommendGarage($id)
     {
-        $garage = Garage::find($id);
-        $service = ServiceGarage::where('id_garage', $garage->id)->get();
-        $brand = BrandGarage::where('id_garage', $garage->id)->get();
-
-        //recommend garage
-        $path = public_path('python/main.py');
-        $process = new Process(['python', $path, $id]);
-        
-        $process->run();
-        
-        // error handling
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-
-        $output_data = json_decode($process->getOutput(), true);
-        //dd($output_data);
-        $ids = implode(',', $output_data);
-
-        $recommend_garage = Garage::whereIn('id', $output_data)->orderByRaw("FIELD(id,{$ids})")->get();
-        return response()->json([
-            'data' => $recommend_garage,
-            'status' => true,
-            'message' => 'Logout success',
-        ], 200);
+        $garages = $this->garageService->recommendGarage($id);
+        return $this->sendResponse($garages);
     }
 
     public function register(GarageRequest $request) 

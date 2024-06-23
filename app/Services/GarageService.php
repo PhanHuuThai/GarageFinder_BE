@@ -16,6 +16,7 @@ use App\Repositories\ServiceGarageRepository;
 use App\Repositories\WardRepository;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Http;
 
 class GarageService extends BaseService
 {
@@ -41,6 +42,13 @@ class GarageService extends BaseService
         $this->provinceRepository = $provinceRepository;
         $this->serviceGarageRepository = $serviceGarageRepository;
         $this->brandGarageRepository = $brandGarageRepository;
+    }
+
+    public function recommendGarage($id)
+    {
+        $recommend_garage = Http::get('http://127.0.0.1:5000/api/recommend-garage/'.$id);
+        $garages = $this->garageRepository->getGarageByIds(json_decode($recommend_garage));
+        return $this->successResult($garages, "get recommend garage success");
     }
 
     public function getHomeGarage()

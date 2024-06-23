@@ -21,6 +21,11 @@ class OrderRepository extends BaseRepository
                         ->where('status', 2)->get();
     }
 
+    public function getCompleteOrderByUserId($id) {
+        return $this->model->where('id_user', $id)
+                        ->where('status', 2)->get();
+    }
+
     public function getOrderByIdUserAndStatus($id, $status) {
         return $this->model->where('id_user', $id)->where('status', $status)->orderBy('created_at')->get();
     }

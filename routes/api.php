@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\admin\BrandController;
 use App\Http\Controllers\admin\GarageRegisterController;
+use App\Http\Controllers\admin\HelpController;
 use App\Http\Controllers\admin\ServiceController;
 use App\Http\Controllers\AuthenController;
 use App\Http\Controllers\client\AboutController;
 use App\Http\Controllers\client\AddressController;
+use App\Http\Controllers\client\ClientHelpController;
 use App\Http\Controllers\client\FavouriteGarageController;
 use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProfileController;
@@ -81,6 +83,13 @@ Route::group([
         Route::get('/', [FavouriteGarageController::class, 'getFavouriteGarageByUserId']);
     });
     Route::group([
+        'prefix' => 'help',
+        'middleware' => ['auth:sanctum']
+    ], function () {
+        Route::post('/', [ClientHelpController::class, 'createHelp']);
+        Route::put('/', [ClientHelpController::class, 'updateStatus']);
+    });
+    Route::group([
         'prefix' => 'about'
     ], function () {
         Route::get('/get-all-service', [AboutController::class, 'getAllService']);
@@ -97,6 +106,8 @@ Route::group([
         'prefix' => 'order'
     ], function () {
         Route::post('/', [OrderClientController::class, 'createBooking']);
+        Route::get('/', [OrderController::class, 'getOrderByUserId']);
+        Route::get('/get-complete-order', [OrderController::class, 'getCompleteOrderByUserId']);
     });
     Route::get('/get-all-provinces', [AddressController::class, 'getAllProvinces']);
     Route::get('/get-districts/{id}', [AddressController::class, 'getDistrictByIdProvince']);
